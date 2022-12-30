@@ -623,3 +623,1722 @@ if [[ "$student_model" == *"resnet56"* ]]; then
 		--T 5 --Lambda 0.95
 	fi
 fi
+
+
+########################################################################################################################################################
+######################################################## CONVNET2 AS STUDENT ###########################################################################
+########################################################################################################################################################
+## NOTE: Here I'm not hardcoding every permutation for convnet2, 4, 6, 8 & 10, as it might not be necessary.
+# Teacher: convnet4
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet4_NLL
+	if [[ "$teacher_model" == *"convnet4_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet4_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet4_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet4_FL+MDCA
+	if [[ "$teacher_model" == *"convnet4_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet4_focal_loss
+	if [[ "$teacher_model" == *"convnet4_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+# Teacher: convnet6
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet6_NLL
+	if [[ "$teacher_model" == *"convnet6_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet6_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet6_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet6_FL+MDCA
+	if [[ "$teacher_model" == *"convnet6_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet6_focal_loss
+	if [[ "$teacher_model" == *"convnet6_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+# Teacher: convnet8
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet8_NLL
+	if [[ "$teacher_model" == *"convnet8_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet8_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet8_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet8_FL+MDCA
+	if [[ "$teacher_model" == *"convnet8_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet8_focal_loss
+	if [[ "$teacher_model" == *"convnet8_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+# Teacher: convnet10
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet10_NLL
+	if [[ "$teacher_model" == *"convnet10_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet10_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet10_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet10_FL+MDCA
+	if [[ "$teacher_model" == *"convnet10_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet2"* ]]; then
+	## STUDENT=convnet2 ; TEACHER=convnet10_focal_loss
+	if [[ "$teacher_model" == *"convnet10_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet2 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+########################################################################################################################################################
+######################################################## CONVNET4 AS STUDENT ###########################################################################
+########################################################################################################################################################
+
+# Teacher: convnet2
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet2_NLL
+	if [[ "$teacher_model" == *"convnet2_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet2_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet2_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet2_FL+MDCA
+	if [[ "$teacher_model" == *"convnet2_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet2_focal_loss
+	if [[ "$teacher_model" == *"convnet2_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+# Teacher: convnet6
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet6_NLL
+	if [[ "$teacher_model" == *"convnet6_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet6_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet6_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet6_FL+MDCA
+	if [[ "$teacher_model" == *"convnet6_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet6_focal_loss
+	if [[ "$teacher_model" == *"convnet6_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+# Teacher: convnet8
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet8_NLL
+	if [[ "$teacher_model" == *"convnet8_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet8_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet8_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet8_FL+MDCA
+	if [[ "$teacher_model" == *"convnet8_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet8_focal_loss
+	if [[ "$teacher_model" == *"convnet8_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+# Teacher: convnet10
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet10_NLL
+	if [[ "$teacher_model" == *"convnet10_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet10_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet10_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet10_FL+MDCA
+	if [[ "$teacher_model" == *"convnet10_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet4"* ]]; then
+	## STUDENT=convnet4 ; TEACHER=convnet10_focal_loss
+	if [[ "$teacher_model" == *"convnet10_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet4 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+########################################################################################################################################################
+######################################################## CONVNET6 AS STUDENT ###########################################################################
+########################################################################################################################################################
+
+# Teacher: convnet2
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet2_NLL
+	if [[ "$teacher_model" == *"convnet2_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet2_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet2_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet2_FL+MDCA
+	if [[ "$teacher_model" == *"convnet2_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet2_focal_loss
+	if [[ "$teacher_model" == *"convnet2_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+# Teacher: convnet4
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet4_NLL
+	if [[ "$teacher_model" == *"convnet4_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet4_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet4_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet4_FL+MDCA
+	if [[ "$teacher_model" == *"convnet4_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet4_focal_loss
+	if [[ "$teacher_model" == *"convnet4_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+# Teacher: convnet8
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet8_NLL
+	if [[ "$teacher_model" == *"convnet8_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet8_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet8_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet8_FL+MDCA
+	if [[ "$teacher_model" == *"convnet8_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet8_focal_loss
+	if [[ "$teacher_model" == *"convnet8_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+# Teacher: convnet10
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet10_NLL
+	if [[ "$teacher_model" == *"convnet10_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet10_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet10_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet10_FL+MDCA
+	if [[ "$teacher_model" == *"convnet10_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet6"* ]]; then
+	## STUDENT=convnet6 ; TEACHER=convnet10_focal_loss
+	if [[ "$teacher_model" == *"convnet10_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet6 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+########################################################################################################################################################
+######################################################## convnet8 AS STUDENT ###########################################################################
+########################################################################################################################################################
+
+# Teacher: convnet2
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet2_NLL
+	if [[ "$teacher_model" == *"convnet2_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet2_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet2_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet2_FL+MDCA
+	if [[ "$teacher_model" == *"convnet2_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet2_focal_loss
+	if [[ "$teacher_model" == *"convnet2_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+# Teacher: convnet4
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet4_NLL
+	if [[ "$teacher_model" == *"convnet4_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet4_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet4_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet4_FL+MDCA
+	if [[ "$teacher_model" == *"convnet4_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet4_focal_loss
+	if [[ "$teacher_model" == *"convnet4_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+# Teacher: convnet6
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet6_NLL
+	if [[ "$teacher_model" == *"convnet6_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet6_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet6_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet6_FL+MDCA
+	if [[ "$teacher_model" == *"convnet6_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet6_focal_loss
+	if [[ "$teacher_model" == *"convnet6_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+# Teacher: convnet10
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet10_NLL
+	if [[ "$teacher_model" == *"convnet10_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet10_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet10_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet10_FL+MDCA
+	if [[ "$teacher_model" == *"convnet10_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet8"* ]]; then
+	## STUDENT=convnet8 ; TEACHER=convnet10_focal_loss
+	if [[ "$teacher_model" == *"convnet10_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet10_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet10/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet8 \
+		--teacher convnet10 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+########################################################################################################################################################
+######################################################## convnet10 AS STUDENT ###########################################################################
+########################################################################################################################################################
+
+# Teacher: convnet2
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet2_NLL
+	if [[ "$teacher_model" == *"convnet2_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet2_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet2_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet2_FL+MDCA
+	if [[ "$teacher_model" == *"convnet2_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet2_focal_loss
+	if [[ "$teacher_model" == *"convnet2_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet2_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet2/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet2 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+# Teacher: convnet4
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet4_NLL
+	if [[ "$teacher_model" == *"convnet4_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet4_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet4_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet4_FL+MDCA
+	if [[ "$teacher_model" == *"convnet4_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet4_focal_loss
+	if [[ "$teacher_model" == *"convnet4_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet4_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet4/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet4 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+# Teacher: convnet6
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet6_NLL
+	if [[ "$teacher_model" == *"convnet6_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet6_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet6_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet6_FL+MDCA
+	if [[ "$teacher_model" == *"convnet6_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet6_focal_loss
+	if [[ "$teacher_model" == *"convnet6_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet6_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet6/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet6 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+# Teacher: convnet8
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet8_NLL
+	if [[ "$teacher_model" == *"convnet8_cross_entropy"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_cross_entropy ${dataset}`
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss cross_entropy \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet8_NLL+MDCA
+	if [[ "$teacher_model" == *"convnet8_NLL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_NLL+MDCA_beta=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss NLL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+ 
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet8_FL+MDCA
+	if [[ "$teacher_model" == *"convnet8_FL+MDCA"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_FL+MDCA_gamma=1.0_beta=5.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST beta & gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss FL+MDCA \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
+if [[ "$student_model" == *"convnet10"* ]]; then
+	## STUDENT=convnet10 ; TEACHER=convnet8_focal_loss
+	if [[ "$teacher_model" == *"convnet8_focal_loss"* ]]; then
+		# The command below just outputs the checkpoint directory of the trained teacher model. In the next line full path to teacher model's checkpoint is created.
+		trained_teacher_dirname=`bash find_checkpoint.sh convnet8_focal_loss_gamma=1.0 ${dataset}` # TODO: UPDATE THIS WITH THE BEST gamma
+		trained_teacher_path="trained_model_library/${dataset}/convnet8/${trained_teacher_dirname}"
+		CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_student.py \
+		--dataset $dataset \
+		--model convnet10 \
+		--teacher convnet8 \
+		--teacher_path $trained_teacher_path \
+		--teacher_loss focal_loss \
+		--lr 0.1 \
+		--epochs $epochs \
+		--wd 1e-4 \
+		--train-batch-size 128 \
+		--checkpoint distilled_model_library \
+		--T 5 --Lambda 0.95
+	fi
+fi
+
