@@ -1,0 +1,598 @@
+#!/bin/bash
+### CIFAR10/100 ###############################################################
+#
+# EXAMPLE: (To run the script for multiple models, pass in a string like here for --model argument)
+#
+# > bash scratch_script.sh --model resnet8_resnet32_resnet56 --dataset cifar10 --epochs 125
+############################################# ARGUMENT HANDLING #################################################
+echo "[Script-message]: You might want to use --help, for extra information. (even about the code style)"
+SHORT=m:,d:,e:,h:
+LONG=model:,dataset:,epochs:,help
+OPTS=$(getopt -a -n scratch --options $SHORT --longoptions $LONG -- "$@")
+
+eval set -- "$OPTS"
+echo $OPTS
+# If no argument is passed
+if [ "$1" == "--" ]; then
+	echo "[ERROR]: No argument passed. Expected arguments are: --model. --dataset, --epochs, --help."
+	exit 125
+fi
+
+# following variables just check if the corresponding argument has been passed
+is_model_there=0
+is_dataset_there=0
+is_epochs_there=0
+
+while :
+do
+  case "$1" in
+    --model )
+      model="$2"
+      is_model_there=1
+      shift 2
+      ;;
+    --dataset )
+      dataset="$2"
+      is_dataset_there=1
+      shift 2
+      ;;
+    --epochs )
+      epochs="$2"
+      is_epochs_there=1
+      shift 2
+      ;;
+    --help )
+      echo "This script trains resnet8, resnet32 and resnet56 models on provided dataset in traditional way (no-KD). Different permutations for \"loss weights\" were used to train models with fancy losses (Non-NLL). Please feel free to set in the commands however you want."
+      echo "--model: Pass in the model type you want to get trained models for."
+      echo "--dataset: Pass in the dataset you want your all models to train on."
+      echo "--epochs: Pass in the number of epochs you want to train all your models for."
+      echo "Please note: All of the above arguments are compulsory."
+      echo "{NOT SO MUCH IMPORTANT}: A note about the script: If you see the script, you might observe, even though I have the same format for the commands for all the three models, i.e., resnet8, resnet32 and resnet56. This is because, sometimes we might want to experiment with different hyperparameters for, let's say, larger model, which is resnet56, over here. That's another reason why I thought, it's better to leave the other detailed hyperparameters in hard code, rather than taking them as argument."
+      exit 2
+      ;;
+    --)
+      shift;
+      break
+      ;;
+    *)
+      echo "Unexpected option: $1. Expected arguments are: --model, --dataset, --epochs, --help"
+      ;;
+  esac
+done
+
+# Send error if at least one of --model, --dataset and --epochs is not there
+if [ $is_model_there -eq 0 ] || [ $is_dataset_there -eq 0 ] || [ $is_epochs_there -eq 0 ]; then
+	if [ $is_model_there -eq 0 ]; then
+		echo "[ERROR]: --model is a compulsory argument"
+	fi
+	if [ $is_dataset_there -eq 0 ]; then
+		echo "[ERROR]: --dataset is a compulsory argument"
+	fi
+	if [ $is_epochs_there -eq 0 ]; then
+		echo "[ERROR]: --epochs is a compulsory argument"
+	fi
+	exit 125
+fi
+#####################################################################################################################
+
+	
+######### TRAINING RESNET8, RESNET32 and RESNET56 FROM SCRATCH FOR DIFFERENT LOSSES (Contains 12 runs for each model) #########
+
+## RESNET8 (Model will be trained 12 times with different permutations of losses and "loss-weight" hyper parameters (i.e. gammpa, beta, alpha)
+
+if [[ "$model" == *"resnet8"* ]]; then
+model="resnet8"
+# train scratch resnet8 on cross_entropy ####################################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss cross_entropy \
+--checkpoint trained_model_library
+
+# train scratch resnet8 on NLL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss NLL+MDCA --beta 1.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet8 on NLL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --beta 5.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet8 on NLL+MDCA ####################################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --beta 10.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet8 on FL ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss focal_loss --gamma 1.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet8 on FL ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss focal_loss --gamma 2.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet8 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 1.0 --beta 1.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet8 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 1.0 --beta 5.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet8 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 1.0 --beta 10.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet8 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 2.0 --beta 1.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet8 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 2.0 --beta 5.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet8 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 2.0 --beta 10.0 \
+--checkpoint trained_model_library
+fi
+
+## RESNET 32
+
+if [[ "$model" == *"resnet32"* ]]; then
+model="resnet32"
+# train scratch resnet32 on cross_entropy ####################################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss cross_entropy \
+--checkpoint trained_model_library
+
+# train scratch resnet32 on NLL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss NLL+MDCA --beta 1.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet32 on NLL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --beta 5.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet32 on NLL+MDCA ####################################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --beta 10.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet32 on FL ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss focal_loss --gamma 1.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet32 on FL ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss focal_loss --gamma 2.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet32 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 1.0 --beta 1.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet32 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 1.0 --beta 5.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet32 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 1.0 --beta 10.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet32 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 2.0 --beta 1.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet32 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 2.0 --beta 5.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet32 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 2.0 --beta 10.0 \
+--checkpoint trained_model_library
+fi
+
+## RESNET 56
+
+if [[ "$model" == *"resnet56"* ]]; then
+model="resnet56"
+# train scratch resnet56 on cross_entropy ####################################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss cross_entropy \
+--checkpoint trained_model_library
+
+# train scratch resnet56 on NLL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss NLL+MDCA --beta 1.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet56 on NLL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --beta 5.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet56 on NLL+MDCA ####################################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --beta 10.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet56 on FL ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss focal_loss --gamma 1.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet56 on FL ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss focal_loss --gamma 2.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet56 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 1.0 --beta 1.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet56 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 1.0 --beta 5.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet56 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 1.0 --beta 10.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet56 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 2.0 --beta 1.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet56 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 2.0 --beta 5.0 \
+--checkpoint trained_model_library
+
+# train scratch resnet56 on FL+MDCA ###########################
+CUDA_VISIBLE_DEVICES=0 accelerate launch --mixed_precision fp16 train_scratch.py \
+--dataset $dataset \
+--model $model \
+--lr 0.1 \
+--epochs $epochs \
+--scheduler multistep \
+--schedule-steps 80 120 \
+--lr-decay-factor 0.1 \
+--wd 1e-4 \
+--train-batch-size 128 \
+--loss FL+MDCA --gamma 2.0 --beta 10.0 \
+--checkpoint trained_model_library
+fi
