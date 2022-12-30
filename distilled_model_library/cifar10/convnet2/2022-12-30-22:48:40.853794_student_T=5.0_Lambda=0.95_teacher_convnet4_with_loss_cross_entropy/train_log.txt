@@ -1,6 +1,0 @@
-INFO:  Setting up logging folder : distilled_model_library/cifar10/convnet2/2022-12-30-22:48:40.853794_student_T=5.0_Lambda=0.95_teacher_convnet4_with_loss_cross_entropy
-INFO:  Namespace(Lambda=0.95, T=5.0, alpha=5.0, beta=1.0, chain_length=None, checkpoint='distilled_model_library', current_time='', dataset='cifar10', epochs=1, exp_name='', gamma=1, loss='cross_entropy', lr=0.1, lr_decay_factor=0.1, model='convnet2', momentum=0.9, optimizer='sgd', patience=10, prefix='', regularizer='l2', schedule_steps=[], scheduler='multistep', seed=42, start_epoch=0, teacher='convnet4', teacher_loss='cross_entropy', teacher_path='trained_model_library/cifar10/convnet4/', test_batch_size=100, train_batch_size=128, warmup=0, weight_decay=0.0001, workers=4)
-INFO:  ['train_student.py', '--dataset', 'cifar10', '--model', 'convnet2', '--teacher', 'convnet4', '--teacher_path', 'trained_model_library/cifar10/convnet4/', '--teacher_loss', 'cross_entropy', '--lr', '0.1', '--epochs', '1', '--wd', '1e-4', '--train-batch-size', '128', '--checkpoint', 'distilled_model_library', '--T', '5', '--Lambda', '0.95']
-INFO:  GPUs used: 1
-INFO:  Using teacher model : convnet4
-INFO:  loading teacher model from: trained_model_library/cifar10/convnet4/

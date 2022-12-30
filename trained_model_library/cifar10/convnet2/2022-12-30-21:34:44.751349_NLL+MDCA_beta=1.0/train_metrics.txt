@@ -1,1 +1,0 @@
-lr	train_loss	train_acc	val_loss	val_acc	test_loss	test_acc	SCE	ECE	
